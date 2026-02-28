@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>White Drainer — Rescue Compromised Crypto Assets</title>
+    <meta name="description" content="We recover tokens, unlock DeFi positions, and claim airdrops from compromised wallets before hackers drain them.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-primary: #0a0a0a;
+            --bg-secondary: #111111;
+            --bg-card: #1a1a1a;
+            --text-primary: #ffffff;
+            --text-secondary: #a0a0a0;
+            --accent: #ff6b35;
+            --accent-hover: #ff8c5a;
+            --success: #00d47a;
+            --border: #2a2a2a;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        h1, h2, h3, h4 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 700;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        /* Header */
+        header {
+            padding: 24px 0;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            background: rgba(10, 10, 10, 0.95);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            border-bottom: 1px solid var(--border);
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--text-primary);
+            text-decoration: none;
+        }
+
+        .logo span {
+            color: var(--accent);
+        }
+
+        .nav-cta {
+            background: var(--accent);
+            color: var(--text-primary);
+            padding: 12px 24px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: background 0.3s;
+        }
+
+        .nav-cta:hover {
+            background: var(--accent-hover);
+        }
+
+        /* Hero */
+        .hero {
+            padding: 180px 0 100px;
+            text-align: center;
+            background: radial-gradient(ellipse at center top, #1a1a2e 0%, var(--bg-primary) 70%);
+        }
+
+        .hero h1 {
+            font-size: clamp(36px, 5vw, 64px);
+            line-height: 1.1;
+            margin-bottom: 24px;
+            max-width: 900px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .hero h1 span {
+            color: var(--accent);
+        }
+
+        .hero p {
+            font-size: clamp(18px, 2vw, 22px);
+            color: var(--text-secondary);
+            max-width: 600px;
+            margin: 0 auto 40px;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 16px 32px;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 16px;
+            text-decoration: none;
+            transition: all 0.3s;
+            cursor: pointer;
+            border: none;
+        }
+
+        .btn-primary {
+            background: var(--accent);
+            color: var(--text-primary);
+        }
+
+        .btn-primary:hover {
+            background: var(--accent-hover);
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--text-primary);
+            border: 2px solid var(--border);
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--accent);
+            background: rgba(255, 107, 53, 0.1);
+        }
+
+        /* Sections */
+        section {
+            padding: 100px 0;
+        }
+
+        .section-title {
+            font-size: clamp(28px, 3vw, 40px);
+            text-align: center;
+            margin-bottom: 16px;
+        }
+
+        .section-subtitle {
+            text-align: center;
+            color: var(--text-secondary);
+            font-size: 18px;
+            max-width: 600px;
+            margin: 0 auto 60px;
+        }
+
+        /* Problem */
+        .problem {
+            background: var(--bg-secondary);
+        }
+
+        .problem-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px;
+            margin-top: 40px;
+        }
+
+        .problem-card {
+            background: var(--bg-card);
+            padding: 32px;
+            border-radius: 16px;
+            border: 1px solid var(--border);
+        }
+
+        .problem-card h3 {
+            font-size: 20px;
+            margin-bottom: 12px;
+            color: var(--accent);
+        }
+
+        .problem-card p {
+            color: var(--text-secondary);
+        }
+
+        /* Services */
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 24px;
+        }
+
+        .service-card {
+            background: var(--bg-card);
+            padding: 40px 32px;
+            border-radius: 16px;
+            border: 1px solid var(--border);
+            transition: border-color 0.3s;
+        }
+
+        .service-card:hover {
+            border-color: var(--accent);
+        }
+
+        .service-icon {
+            font-size: 40px;
+            margin-bottom: 20px;
+        }
+
+        .service-card h3 {
+            font-size: 22px;
+            margin-bottom: 12px;
+        }
+
+        .service-card p {
+            color: var(--text-secondary);
+        }
+
+        /* Why Us */
+        .why-us {
+            background: var(--bg-secondary);
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px;
+        }
+
+        .feature-card {
+            display: flex;
+            gap: 16px;
+            align-items: flex-start;
+        }
+
+        .feature-icon {
+            font-size: 32px;
+            flex-shrink: 0;
+        }
+
+        .feature-content h3 {
+            font-size: 18px;
+            margin-bottom: 8px;
+        }
+
+        .feature-content p {
+            color: var(--text-secondary);
+            font-size: 15px;
+        }
+
+        .track-record {
+            margin-top: 40px;
+            padding: 32px;
+            background: var(--bg-card);
+            border-radius: 16px;
+            text-align: center;
+            border: 1px solid var(--border);
+        }
+
+        .track-record p {
+            color: var(--text-secondary);
+            margin-bottom: 16px;
+        }
+
+        .logos {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+            justify-content: center;
+            color: var(--accent);
+            font-weight: 600;
+        }
+
+        .logos span {
+            padding: 8px 16px;
+            background: rgba(255, 107, 53, 0.1);
+            border-radius: 6px;
+        }
+
+        /* How It Works */
+        .steps {
+            counter-reset: step;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 32px;
+        }
+
+        .step {
+            position: relative;
+            padding-left: 60px;
+        }
+
+        .step::before {
+            counter-increment: step;
+            content: counter(step);
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 44px;
+            height: 44px;
+            background: var(--accent);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 18px;
+        }
+
+        .step h3 {
+            font-size: 18px;
+            margin-bottom: 8px;
+        }
+
+        .step p {
+            color: var(--text-secondary);
+            font-size: 15px;
+        }
+
+        .commission {
+            margin-top: 60px;
+            text-align: center;
+            padding: 32px;
+            background: var(--bg-card);
+            border-radius: 16px;
+            border: 1px solid var(--accent);
+        }
+
+        .commission h3 {
+            font-size: 24px;
+            margin-bottom: 8px;
+        }
+
+        .commission p {
+            color: var(--text-secondary);
+        }
+
+        .commission span {
+            color: var(--accent);
+            font-weight: 700;
+        }
+
+        /* Security */
+        .security {
+            background: var(--bg-secondary);
+        }
+
+        .security-warning {
+            background: rgba(255, 107, 53, 0.1);
+            border: 1px solid var(--accent);
+            border-radius: 16px;
+            padding: 32px;
+            margin-bottom: 40px;
+        }
+
+        .security-warning h3 {
+            color: var(--accent);
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .security-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 16px;
+        }
+
+        .security-item {
+            display: flex;
+            gap: 12px;
+            align-items: flex-start;
+        }
+
+        .security-item::before {
+            content: '✓';
+            color: var(--success);
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+
+        /* CTA */
+        .cta {
+            text-align: center;
+            padding: 120px 0;
+        }
+
+        .cta h2 {
+            font-size: clamp(32px, 4vw, 48px);
+            margin-bottom: 16px;
+        }
+
+        .cta p {
+            color: var(--text-secondary);
+            font-size: 18px;
+            margin-bottom: 40px;
+        }
+
+        /* Footer */
+        footer {
+            padding: 40px 0;
+            border-top: 1px solid var(--border);
+            text-align: center;
+        }
+
+        footer p {
+            color: var(--text-secondary);
+        }
+
+        footer a {
+            color: var(--accent);
+            text-decoration: none;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero {
+                padding: 140px 0 80px;
+            }
+
+            section {
+                padding: 60px 0;
+            }
+
+            .nav-cta {
+                padding: 10px 16px;
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <nav>
+                <a href="#" class="logo">White<span>Drainer</span></a>
+                <a href="https://t.me/LEET0i" class="nav-cta">Contact @LEET0i</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero -->
+    <section class="hero">
+        <div class="container">
+            <h1>Rescue Your <span>Compromised</span> Crypto Assets</h1>
+            <p>We recover tokens, unlock DeFi positions, and claim airdrops before hackers drain your wallets.</p>
+            <div class="hero-buttons">
+                <a href="https://t.me/LEET0i" class="btn btn-primary">Start Rescue</a>
+                <a href="#how-it-works" class="btn btn-secondary">How It Works</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Problem -->
+    <section class="problem">
+        <div class="container">
+            <h2 class="section-title">Your Private Keys Are Compromised.<br><span style="color: var(--accent);">Time Is Critical.</span></h2>
+            <p class="section-subtitle">Every second counts. Hackers move fast — you need experts who move faster.</p>
+            <div class="problem-grid">
+                <div class="problem-card">
+                    <h3>⚡ Active Draining</h3>
+                    <p>Hackers are draining your wallets right now. Tokens can be gone in minutes.</p>
+                </div>
+                <div class="problem-card">
+                    <h3>🐌 Too Slow</h3>
+                    <p>Standard recovery methods are too slow. You need instant action.</p>
+                </div>
+                <div class="problem-card">
+                    <h3>🤖 Outsmarted</h3>
+                    <p>Drain bots monitor mempools. You need advanced tactics to beat them.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Services -->
+    <section class="services">
+        <div class="container">
+            <h2 class="section-title">What We Rescue</h2>
+            <p class="section-subtitle">Complete recovery service for compromised wallets</p>
+            <div class="services-grid">
+                <div class="service-card">
+                    <div class="service-icon">🟠</div>
+                    <h3>Tokens on Balance</h3>
+                    <p>Immediate transfer of all tokens from compromised addresses before hackers can act.</p>
+                </div>
+                <div class="service-card">
+                    <div class="service-icon">🔓</div>
+                    <h3>DeFi Unlocks</h3>
+                    <p>Unlock and withdraw from locked positions, vesting schedules, staking, and DeFi protocols.</p>
+                </div>
+                <div class="service-card">
+                    <div class="service-icon">🎁</div>
+                    <h3>Airdrop Claims</h3>
+                    <p>Claim retroactive airdrops and pending rewards from compromised addresses.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Why Us -->
+    <section class="why-us">
+        <div class="container">
+            <h2 class="section-title">Why White Drainer?</h2>
+            <p class="section-subtitle">Battle-tested expertise in crypto asset recovery</p>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">⚡</div>
+                    <div class="feature-content">
+                        <h3>Proven Strategies</h3>
+                        <p>Battle-tested methods against 100+ drain scenarios across multiple chains.</p>
+                    </div>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🖥️</div>
+                    <div class="feature-content">
+                        <h3>Own Infrastructure</h3>
+                        <p>Dedicated nodes and bots for instant transaction execution.</p>
+                    </div>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🧠</div>
+                    <div class="feature-content">
+                        <h3>Advanced Tactics</h3>
+                        <p>Non-standard approaches that outsmart drain bots and MEV searchers.</p>
+                    </div>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📚</div>
+                    <div class="feature-content">
+                        <h3>Track Record</h3>
+                        <p>Successfully rescued assets from major protocols and airdrops.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="track-record">
+                <p>Successfully worked with:</p>
+                <div class="logos">
+                    <span>Odos</span>
+                    <span>Nillion</span>
+                    <span>Zora</span>
+                    <span>Layer3</span>
+                    <span>Curve</span>
+                    <span>Caldera</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works -->
+    <section class="how-it-works" id="how-it-works">
+        <div class="container">
+            <h2 class="section-title">How It Works</h2>
+            <p class="section-subtitle">Four simple steps to recover your assets</p>
+            <div class="steps">
+                <div class="step">
+                    <h3>Submit Wallets</h3>
+                    <p>Send us compromised addresses through secure channel.</p>
+                </div>
+                <div class="step">
+                    <h3>Analysis</h3>
+                    <p>We scan balances, locks, vesting, and pending rewards.</p>
+                </div>
+                <div class="step">
+                    <h3>Live Updates</h3>
+                    <p>Real-time notifications at every step of recovery.</p>
+                </div>
+                <div class="step">
+                    <h3>Recovery Complete</h3>
+                    <p>Tokens sent to your safe address. Mission accomplished.</p>
+                </div>
+            </div>
+            <div class="commission">
+                <h3>Commission: <span>10% – 50%</span></h3>
+                <p>Depends on complexity, network, and number of wallets</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Security -->
+    <section class="security">
+        <div class="container">
+            <h2 class="section-title">Security First</h2>
+            <p class="section-subtitle">Your security is our top priority</p>
+            <div class="security-warning">
+                <h3>⚠️ Important Security Notice</h3>
+                <p style="color: var(--text-secondary); margin-bottom: 0;">Never share private keys through unencrypted channels. Always use secure communication methods.</p>
+            </div>
+            <div class="security-list">
+                <div class="security-item">
+                    <p>Use encrypted messaging (ProtonMail, Signal)</p>
+                </div>
+                <div class="security-item">
+                    <p>Encrypt keys with password before sending</p>
+                </div>
+                <div class="security-item">
+                    <p>Use one-time secure links (PrivateBin)</p>
+                </div>
+                <div class="security-item">
+                    <p>Verify recipient identity before sharing</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="cta">
+        <div class="container">
+            <h2>Ready to Rescue Your Assets?</h2>
+            <p>Don't wait — hackers won't.</p>
+            <a href="https://t.me/LEET0i" class="btn btn-primary" style="font-size: 18px; padding: 20px 40px;">Contact @LEET0i on Telegram</a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <p>Contact: <a href="https://t.me/LEET0i">@LEET0i</a> | Response time: Usually within 1 hour | Available: 24/7</p>
+            <p style="margin-top: 16px; font-size: 14px;">© 2026 White Drainer. All rights reserved.</p>
+        </div>
+    </footer>
+</body>
+</html>
